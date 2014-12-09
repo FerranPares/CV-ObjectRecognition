@@ -2,7 +2,7 @@ load('mnist_all.mat');
 %imshow(reshape(train7(5,:), 28, 28)');
 C  = [0.01 0.1 1 2 4] ;
 
-itrain0 = randi(length(train0),100,1);
+itrain0 = randi(length(train0),1,100);
 itrain1 = randi(length(train1),1,100);
 itrain2 = randi(length(train2),1,100);
 itrain3 = randi(length(train3),1,100);
@@ -25,12 +25,15 @@ X8 = train8(itrain8,:)';
 X9 = train9(itrain9,:)';
 
 X = [X0 X1 X2 X3 X4 X5 X6 X7 X8 X9];
+X = double(X);
+KX = X'*X ;
 
 Y = [zeros(1,100) ones(1,100) zeros(1,800)];
+Y = double(Y);
 
-for i=1:length(C)
-    model = svmdemo(X, Y, 'linear', C(i)) ;
-end
+%for i=1:length(C)
+    model = svm(KX, Y, C(1)) ;
+%end
 
 T = [test0' test1' test2' test3' test4' test5' test6' test7' test8' test9'];
 sz0 = size(test0,1);
@@ -38,6 +41,8 @@ sz1 = size(test1,1);
 szT = size(T,2);
 
 T_gt_labels = [zeros(1,sz0) ones(1,sz1) zeros(1,szT-(sz0+sz1))];
+
+
 
 T_predicted_labels = predict(model,T);
 
