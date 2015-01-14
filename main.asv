@@ -2,7 +2,7 @@ load('mnist_all.mat');
 
 bestCM = [];
 bestAcc = [];
-myoptions = statset('Display','off','MaxIter',200000);
+myoptions = statset('Display','off','MaxIter',120000);
 
 for numInstances=[100 500]
     X = getXTrain(numInstances,train0,train1,train2,train3,train4,train5,train6,train7,train8,train9);
@@ -35,7 +35,7 @@ for numInstances=[100 500]
             size8 = size(test8,1)+size7;
             size9 = size(test9,1)+size8;
 
-            predicted = svmclassify(SVMStruct, XTest);
+            predicted = svmclassify(SVMStruct, XTest, 'ShowPlot', true);
 
             pred0 = sum(predicted(1:size0));
             pred1 = sum(predicted(size0+1:size1));
@@ -91,7 +91,7 @@ end
 accCL = [];
 cmCL = [];
 C = [0.01 0.1 1 2 4];
-L = [1 10 30 60 100];
+L = [0.1 1 3];
 numInstances = 100;
 X = getXTrain(numInstances,train0,train1,train2,train3,train4,train5,train6,train7,train8,train9);
 for lambda=L
@@ -120,7 +120,7 @@ for lambda=L
             size8 = size(test8,1)+size7;
             size9 = size(test9,1)+size8;
 
-            predicted = svmclassify(SVMStruct, XTest);
+            predicted = svmclassify(SVMStruct, XTest, 'ShowPlot', true);
 
             pred0 = sum(predicted(1:size0));
             pred1 = sum(predicted(size0+1:size1));
@@ -160,12 +160,12 @@ for lambda=L
             thisacc = (truePositive+trueNegative)/(truePositive+trueNegative+falsePositive+falseNegative);
             accuracy = [accuracy; thisacc];
         end
-        accCL = [accCL accuracy];
-        cmCL = cat(3,cmCL,ConfusionMatrix);
+        accCL = [accC accuracy];
+        cmCL = cat(3,cmC,ConfusionMatrix);
     end
 end
 [bestAccCL,indxCL] = max(mean(accCL));
-indxL = floor((indxCL-1)/5)+1;
+indxL = floor(indxCL-1/5)+1;
 indxC = mod(indxCL-1,5)+1;
 bestC = C(indxC);
 bestL = L(indxL);
@@ -174,8 +174,5 @@ fprintf('____SVM-RBF____\nBest C: %1.2f \nBest lambda: %1.1f \nAcc: %1.4f \n',be
 
 bestAcc = [bestAcc bestAccCL];
 bestCM = cat(3,bestCM,cmCL(:,:,indxCL));
-
-CM100 = bestCM(:,:,1);
-CM500 = bestCM(:,:,2);
-CMRBF = bestCM(:,:,3);
+s=0;
 

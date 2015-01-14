@@ -1,7 +1,7 @@
 % SVMDEMO_LINEAR
 
-Np = 15 ;
-Nn = 15 ;
+Np = 100 ;
+Nn = 100 ;
 C  = .1 ;
 
 [X, y] = gendata(Np, Nn) ;
